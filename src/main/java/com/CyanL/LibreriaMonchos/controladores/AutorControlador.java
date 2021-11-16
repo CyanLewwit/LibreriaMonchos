@@ -25,12 +25,12 @@ public class AutorControlador {
     public String listautores(ModelMap m) {
         List<Autor> autores = as.listarall();
         m.addAttribute("autores", autores);
-        return null;
+        return "ListaAutores";
     }
     
     @GetMapping("/registroautor")
     public String muestraregistro() {
-        return null;
+        return "GuardarAutor";
     }
     
     @PostMapping("/registroautor")
@@ -38,10 +38,10 @@ public class AutorControlador {
         try {
             as.crearAutor(name);
             modelo.put("exito", "Registro Exitoso");
-            return null;
+            return "GuardarAutor";
         } catch (Exception e) {
             modelo.put("fail", "Registro Fallido(Falta de uno o mas datos)");
-            return null;
+            return "GuardarAutor";
         }
     }
     
