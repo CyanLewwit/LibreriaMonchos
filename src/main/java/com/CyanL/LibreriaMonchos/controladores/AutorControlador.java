@@ -34,9 +34,11 @@ public class AutorControlador {
     }
     
     @PostMapping("/registroautor")
-    public String registro(ModelMap modelo, @RequestParam String name, @RequestParam String alta) throws Exception {
+    public String registro(ModelMap modelo, @RequestParam String nombre) throws Exception {
         try {
-            as.crearAutor(name);
+            System.out.println("Entro al tryyyy");
+            as.crearAutor(nombre);
+            System.out.println("Paso la creacion");
             modelo.put("exito", "Registro Exitoso");
             return "GuardarAutor";
         } catch (Exception e) {
@@ -48,26 +50,18 @@ public class AutorControlador {
     @GetMapping("/modifautor/{id}")
     public String FormModAut(@PathVariable String id, ModelMap m) {
         m.put("autor", as.getOne(id));
-        return null;
+        return "ModAutor";
     }
     
-        @PostMapping("/modifautor/{id}")
-    public String mod(ModelMap m, @PathVariable String id, @RequestParam String name, @RequestParam String a) throws Exception {
-        boolean x;
-        if (a.equalsIgnoreCase("si")) {
-            x = true;
-        } else if (a.equalsIgnoreCase("no")) {
-            x = false;
-        } else {
-            throw new Exception("Error en el valor de alta");
-        }
+    @PostMapping("/modifautor/{id}")
+    public String mod(ModelMap m, @PathVariable String id, @RequestParam String name) throws Exception {
         try {
-            as.ModAutor(id, name, x);
-            m.addAttribute("extito", "Modificacion exitosa");
-            return null;
+            as.ModAutor(id, name);
+            m.addAttribute("exito", "Modificacion exitosa");
+            return "ModAutor";
         } catch (Exception e) {
             m.addAttribute("fail", "Modificacion Fallida(Error)");
-            return null;
+            return "ModAutor";
         }
     }
 

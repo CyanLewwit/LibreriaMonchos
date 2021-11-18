@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html xmlns:th="http://www.thymeleaf.org">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
@@ -17,33 +17,35 @@
     </header><br><br><br>  
     
     <h3>Autores</h3><br><br><br>
-    <thead>
-        <tr>
-          <th scope="col">Id</th>
-          <th scope="col">Nombre</th>
-          <th scope="col">Alta</th>
-        </tr>
-      </thead>
+    <div class="container-m5">
+      <table class="table-list">
+        <thead>
+          <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Nombre</th>
+            <th scope="col">Alta</th>
+          </tr>
+        </thead>
+        <tbody th:each="autor : ${autores}">
+          <tr>
+            <th scope="row" th:text="${autor.id}"></th>
+            <td th:text="${autor.nombre}"></td>
+            <td>
+              <i th:if="${autor.alta}" class="fa fa-circle text succes"></i>
+              <i
+                th:unless="${autor.alta}"
+                class="fa fa-circle"
+                style="color: red"
+              ></i>
+            </td>
+            <td>
+              <a th:href="@{/autor/modifautor/__${autor.id}__}">Modificar</a>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-
-
-      <tbody th:each="autor : ${autores}">
-        <tr>
-          <th scope="row" th:text="${autor.nombre}"></th>
-          <td th:text="${autor.nombre}"></td>
-          <td>
-            <i th:if="${autor.alta}" class="fa fa-circle text succes"></i>
-            <i
-              th:unless="${autor.alta}"
-              class="fa fa-circle"
-              style="color: red"
-            ></i>
-          </td>
-          <td>
-            <a th:href="@{/autorlista/modifautor/__${autor.id}__}">Modificar</a>
-          </td>
-        </tr>
-      </tbody>
 
       <div class="agregate">
         <a th:href="@{/autor/registroautor}">+</a>

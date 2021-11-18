@@ -17,20 +17,23 @@ public class AutorSS {
     
     @Transactional
     public Autor crearAutor(String name) throws Exception {
+        validarName(name);
+        System.out.println("Valido el nombre");
         Autor autor = new Autor();
+        System.out.println("Creo el autor");
         autor.setNombre(name);
+        System.out.println("Seteo el name en el autor");
         autor.setAlta(true);
-        validacion(autor.getNombre(), autor.getId(),autor.isAlta());
+        System.out.println("Seteo el boolean");
         return ap.save(autor);
     }
     
     @Transactional
-    public Autor ModAutor(String id, String n, boolean s) throws Exception {
+    public Autor ModAutor(String id, String n) throws Exception {
         Autor r = ap.getById(id);
         if (r != null) {
-            validacion(n, id, s);
+            validarName(r.getNombre());
             r.setNombre(n);
-            r.setAlta(s);
             return ap.save(r);
         } else {
             throw new Exception("El auto que desea Modificar no existe en la BdD");
@@ -73,5 +76,20 @@ public class AutorSS {
     @Transactional
     public Autor getOne(String id) {
         return ap.getById(id);
+    }
+    
+    @Transactional
+    public void validarName(String x) throws Exception{
+        if (x == null || x.isEmpty()) {
+            throw new Exception("Nombre no puede ser vacio o nulo");
+        }
+    }
+    
+    @Transactional
+    public void validarId(String id) throws Exception{
+        Autor x = ap.getById(id);
+        if (x != null) {
+            throw new Exception("Ya existe un Autor con ese id en la BdD");
+        }
     }
 }
