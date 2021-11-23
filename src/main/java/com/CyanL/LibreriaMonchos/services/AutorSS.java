@@ -18,13 +18,9 @@ public class AutorSS {
     @Transactional
     public Autor crearAutor(String name) throws Exception {
         validarName(name);
-        System.out.println("Valido el nombre");
         Autor autor = new Autor();
-        System.out.println("Creo el autor");
         autor.setNombre(name);
-        System.out.println("Seteo el name en el autor");
         autor.setAlta(true);
-        System.out.println("Seteo el boolean");
         return ap.save(autor);
     }
     
@@ -36,37 +32,20 @@ public class AutorSS {
             r.setNombre(n);
             return ap.save(r);
         } else {
-            throw new Exception("El auto que desea Modificar no existe en la BdD");
+            throw new Exception("El autor que desea Modificar no existe en la BdD");
         }
     }
     
     
     @Transactional
-    public void ElimAutor(Autor autor) throws Exception {
-        Autor r = ap.getById(autor.getId());
+    public void ElimAutor(String id) throws Exception {
+        Autor r = getOne(id);
         if (r != null) {
             ap.delete(r);
         } else if (r == null) {
             throw new Exception("El auto que desea eliminar no existe en la BdD");
         }
     }
-    
-    @Transactional
-    public void validacion(String name, String id, boolean a) throws Exception {
-        if (name == null || name.isEmpty()) {
-            throw new Exception("Nombre no puede ser vacio o nulo");
-        }
-        if (id == null || id.isEmpty()) {
-            throw new Exception("Id no puede ser vacio o nulo");
-        }
-
-        Autor x = ap.getById(id);
-        if (x != null) {
-            throw new Exception("Ya existe un Autor con ese id en la BdD");
-        }
-
-    }
-
     
     @Transactional
     public List<Autor> listarall() {
@@ -87,7 +66,7 @@ public class AutorSS {
     
     @Transactional
     public void validarId(String id) throws Exception{
-        Autor x = ap.getById(id);
+        Autor x = getOne(id);
         if (x != null) {
             throw new Exception("Ya existe un Autor con ese id en la BdD");
         }

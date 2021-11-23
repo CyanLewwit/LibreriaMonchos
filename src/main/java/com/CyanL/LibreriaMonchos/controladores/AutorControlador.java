@@ -36,9 +36,7 @@ public class AutorControlador {
     @PostMapping("/registroautor")
     public String registro(ModelMap modelo, @RequestParam String nombre) throws Exception {
         try {
-            System.out.println("Entro al tryyyy");
             as.crearAutor(nombre);
-            System.out.println("Paso la creacion");
             modelo.put("exito", "Registro Exitoso");
             return "GuardarAutor";
         } catch (Exception e) {
@@ -54,16 +52,25 @@ public class AutorControlador {
     }
     
     @PostMapping("/modifautor/{id}")
-    public String mod(ModelMap m, @PathVariable String id, @RequestParam String name) throws Exception {
+    public String mod(ModelMap m, @PathVariable String id, @RequestParam String nombre) throws Exception {
         try {
-            as.ModAutor(id, name);
-            m.addAttribute("exito", "Modificacion exitosa");
-            return "ModAutor";
+            as.ModAutor(id, nombre);
+            return "redirect:/autor/lista";
         } catch (Exception e) {
-            m.addAttribute("fail", "Modificacion Fallida(Error)");
+            m.put("fail", "Modificacion Fallida(Error)");
             return "ModAutor";
         }
     }
 
+    
+    @GetMapping("/eliminarautor/{id}")
+    public String eliminar(@PathVariable String id){
+        try{
+            as.ElimAutor(id);
+            return "redirect:/autor/lista";
+        } catch (Exception e){
+            return "ListaAutores";
+        }
+    }
 
 }

@@ -16,53 +16,34 @@ public class EditorialSS {
     EditorialRepositorio ep;
     
     @Transactional
-    public Editorial crearEditorial(String id, String name) throws Exception {
-        Editorial edi = new Editorial();
-        edi.setId(id);
-        edi.setNombre(name);
-        edi.setAlta(true);
-        validacion(edi.getNombre(), edi.getId(), edi.isAlta());
-        return ep.save(edi);
+    public Editorial crearEditorial(String name) throws Exception {
+        validarName(name);
+        Editorial s=new Editorial();
+        s.setNombre(name);
+        s.setAlta(true);
+        return ep.save(s);
     }
     
     @Transactional
-    public Editorial ModEditorial(Editorial edi) throws Exception {
-        Editorial d = ep.getById(edi.getId());
-        if (d != null) {
-            validacion(edi.getNombre(), edi.getId(), edi.isAlta());
-            d.setNombre(edi.getNombre());
-            d.setAlta(edi.isAlta());
-            return ep.save(d);
+    public Editorial ModEditorial(String id,String name) throws Exception {
+        Editorial edi = getOne(id);
+        if (edi != null) {
+            validarName(edi.getNombre());
+            edi.setNombre(name);
+            return ep.save(edi);
         } else {
-            throw new Exception("La editorial que desea modificar no existe en la BdD");
+            throw new Exception("La Editorial que desea Modificar no existe en la BdD");
         }
     }
     
     @Transactional
-    public void Eliminareditorial(Editorial edi) throws Exception {
-        Editorial d = ep.getById(edi.getId());
+    public void Eliminareditorial(String id) throws Exception {
+        Editorial d = getOne(id);
         if (d != null) {
             ep.delete(d);
         } else if (d == null) {
             throw new Exception("La editorial que desea eliminar no existe en la BdD");
         }
-    }
-    
-    
-    @Transactional
-    public void validacion(String name, String id, boolean a) throws Exception {
-        if (name == null || name.isEmpty()) {
-            throw new Exception("Nombre no puede ser vacio o nulo");
-        }
-        if (id == null || id.isEmpty()) {
-            throw new Exception("Id no puede ser vacio o nulo");
-        }
-
-        Editorial x = ep.getById(id);
-        if (x != null) {
-            throw new Exception("Ya existe una Editorial con ese id en la BdD");
-        }
-
     }
     
     @Transactional
@@ -73,6 +54,21 @@ public class EditorialSS {
     @Transactional
     public Editorial getOne(String id) {
         return ep.getById(id);
+    }
+    
+    @Transactional
+    public void validarName(String x) throws Exception {
+        if (x == null || x.isEmpty()) {
+            throw new Exception("Nombre no puede ser vacio o nulo");
+        }
+    }
+    
+      @Transactional
+    public void validarId(String id) throws Exception{
+        Editorial x = getOne(id);
+        if (x != null) {
+            throw new Exception("Ya existe un Autor con ese id en la BdD");
+        }
     }
 }
 
