@@ -43,7 +43,7 @@ public class AutorSS {
         if (r != null) {
             ap.delete(r);
         } else if (r == null) {
-            throw new Exception("El auto que desea eliminar no existe en la BdD");
+            throw new Exception("El autor que desea eliminar no existe en la BdD");
         }
     }
     
@@ -55,6 +55,11 @@ public class AutorSS {
     @Transactional
     public Autor getOne(String id) {
         return ap.getById(id);
+    }
+    
+    @Transactional
+    public Autor buscarxname(String name){
+        return ap.buscarXnombre(name);
     }
     
     @Transactional

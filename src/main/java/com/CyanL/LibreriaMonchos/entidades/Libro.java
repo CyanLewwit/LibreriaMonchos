@@ -2,6 +2,7 @@
 
 package com.CyanL.LibreriaMonchos.entidades;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -16,7 +17,7 @@ public class Libro {
     @GenericGenerator(name = "uuid", strategy = "uuid2")
     private String id;
     
-    private long isbn;
+    private Integer isbn;
     private String titulo;
     private Integer anio;
     private Integer ejemplares;
@@ -40,7 +41,7 @@ public class Libro {
         return isbn;
     }
 
-    public void setIsbn(long isbn) {
+    public void setIsbn(Integer isbn) {
         this.isbn = isbn;
     }
 
@@ -107,7 +108,12 @@ public class Libro {
     public void setEditorial(Editorial editorial) {
         this.editorial = editorial;
     }
+
+
+   
     
     
 
+
+  
 }

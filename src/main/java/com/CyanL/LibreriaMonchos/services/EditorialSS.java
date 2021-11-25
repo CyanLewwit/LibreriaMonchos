@@ -57,6 +57,11 @@ public class EditorialSS {
     }
     
     @Transactional
+    public Editorial buscxname(String name){
+        return ep.buscarXname(name);
+    }
+    
+    @Transactional
     public void validarName(String x) throws Exception {
         if (x == null || x.isEmpty()) {
             throw new Exception("Nombre no puede ser vacio o nulo");

@@ -22,36 +22,52 @@ public class LibroSS {
     EditorialSS edss;
     
     @Transactional
-    public Libro crearLibro(String id, Long isbn, String tit, Integer a, Integer ej, Integer ejp, Integer ejr, boolean x, Autor autor, Editorial edi) throws Exception {
+    public Libro crearLibro(Integer isbn, String tit, Integer a, Integer ej, Integer ejp, String autor, String edi) throws Exception {
+        validar(isbn, tit, a, ej, ejp, autor, edi);
+        System.out.println("Se validaron los datos");
         Libro l = new Libro();
-        l.setId(id);
         l.setIsbn(isbn);
+        System.out.println("Se seteo el isbn");
         l.setTitulo(tit);
+        System.out.println("Se seteo el titulo");
         l.setAnio(a);
+        System.out.println("Se seteo el anio");
         l.setEjemplares(ej);
+        System.out.println("Se setearon los ejemplares");
         l.setEjemplaresPrestados(ejp);
-        l.setEjemplaresRestantes(ejr);
-        l.setAutor(autor);
-        l.setEditorial(edi);
-        l.setAlta(x);
-        validar(l.getIsbn(), l.getTitulo(), l.getAnio(), l.getEjemplares(), l.getEjemplaresPrestados(), l.getEjemplaresRestantes(), l.isAlta(), l.getAutor(), l.getEditorial());
+        System.out.println("Los otros ejemplares");
+        l.setAutor(as.buscarxname(autor));
+        System.out.println("Se seteo el Autor");
+        l.setEditorial(edss.buscxname(edi));
+        System.out.println("Se seteo la Editorial");
+        l.setAlta(true);
+        l.setEjemplaresRestantes(ej-ejp);
+        System.out.println("Los otros de los otros ejemplares");
         return lp.save(l);
     }
     
     @Transactional
-    public Libro ModLibro(Libro l) throws Exception {
-        Libro o = lp.getById(l.getId());
+    public Libro ModLibro(String id,Integer isbn, String tit, Integer a, Integer ej, Integer ejp, String autor, String edi) throws Exception {
+        validar(isbn,tit,a,ej,ejp,autor,edi);
+        System.out.println("Se validaron los datos");
+        Libro o=getOnebyId(id);
         if (o != null) {
-            validar(l.getIsbn(), l.getTitulo(), l.getAnio(), l.getEjemplares(), l.getEjemplaresPrestados(), l.getEjemplaresRestantes(), l.isAlta(), l.getAutor(), l.getEditorial());
-            o.setIsbn(l.getIsbn());
-            o.setTitulo(l.getTitulo());
-            o.setAnio(l.getAnio());
-            o.setEjemplares(l.getEjemplares());
-            o.setEjemplaresPrestados(l.getEjemplaresPrestados());
-            o.setEjemplaresRestantes(l.getEjemplaresRestantes());
-            o.setAlta(l.isAlta());
-            o.setAutor(l.getAutor());
-            o.setEditorial(l.getEditorial());
+            o.setAnio(a);
+            System.out.println("Se seteo el anio");
+            o.setEjemplares(ej);
+            System.out.println("Se setearon los ejemplares");
+            o.setEjemplaresPrestados(ejp);
+            System.out.println("Los otros ejemplares");
+            o.setEjemplaresRestantes(ej-ejp);
+            System.out.println("Los otros de los otros ejemplares");
+            o.setIsbn(isbn);
+            System.out.println("Se seteo el isbn");
+            o.setTitulo(tit);
+            System.out.println("Se seteo el titulo");
+            o.setAutor(as.buscarxname(autor));
+            System.out.println("Se seteo el Autor");
+            o.setEditorial(edss.buscxname(edi));
+            System.out.println("Se seteo la Editorial");
             return lp.save(o);
         } else {
             throw new Exception("El libro que desea modificar no existe en la BdD");
@@ -60,9 +76,11 @@ public class LibroSS {
     }
     
     @Transactional
-    public void EliminarLibro(Libro libro) throws Exception {
-        Libro o = lp.getById(libro.getId());
+    public void EliminarLibro(String id) throws Exception {
+        Libro o = lp.getById(id);
         if (o != null) {
+            o.setAutor(null);
+            o.setEditorial(null);
             lp.delete(o);
         } else if (o == null) {
             throw new Exception("La editorial que desea eliminar no existe en la BdD");
@@ -71,15 +89,13 @@ public class LibroSS {
 
 
     @Transactional
-    public void validar(long isbn, String t, Integer anio, Integer ej, Integer ejP, Integer ejR, boolean h, Autor autor, Editorial edi) throws Exception {
-        Libro y = lp.buscarXisbn(isbn);
-        if (y == null) {
-            if (isbn < 0) {
-                throw new Exception("El isbn no puede ser negativo");
-            }
-        } else {
-            throw new Exception("El isbn ya existe en la BdD");
+    public void validar(Integer isbn, String t, Integer anio, Integer ej, Integer ejP,String autor, String edi) throws Exception {
+   
+        
+       if (isbn < 0) {
+            throw new Exception("El isbn no puede ser negativo");
         }
+       
 
         if (t == null || t.isEmpty()) {
             throw new Exception("El titulo no puede ser vacio o nulo");
@@ -96,33 +112,28 @@ public class LibroSS {
         if (ejP == null || ejP < 0) {
             throw new Exception("El numero de Ejemplares Prestados no puede ser negativo o nulo");
         }
-
-        if (ejR == null || ejR < 0) {
-            throw new Exception("El numero de Ejemplares Restantes no puede ser negativo o nulo");
-        }
-
-        Autor x = as.ap.getById(autor.getId());
-        if (x == null) {
-            throw new Exception("El autor Ingresado no existe, crear antes");
-        }
-
-        Editorial b = edss.ep.getById(edi.getId());
-        if (b == null) {
-            throw new Exception("La Editorial Ingresada no existe, crear antes");
-        }
-
-        if (ejP > ej) {
+         if (ejP > ej) {
             throw new Exception("No puede haber mas libros prestados que existentes");
         }
-        if (ejR > ej) {
-            throw new Exception("No puede haber mas libros restantes que existentes");
+       
+
+        Autor x = as.buscarxname(autor);
+        if (x == null) {
+            System.out.println("No habia autor, se creo");
+            as.crearAutor(autor);
         }
 
-        if (ej != (ejP + ejR)) {
-            throw new Exception("Hay un error, la contabilidad de libros no coincide");
+        Editorial b = edss.buscxname(edi);
+        if (b == null) {
+            System.out.println("No habia editorial se creo");
+            edss.crearEditorial(edi);
         }
+
+       
 
     }
+    
+    
 
     @Transactional
     public List<Libro> libros() {
